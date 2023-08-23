@@ -1,5 +1,13 @@
 #include "monty.h"
 #include <string.h>
+
+instruction_t instruction_set[] = {
+	{"push", push},
+	{"pall", pall},
+	{"pint", pint},
+	{NULL, NULL}
+};
+
 /**
  * parse_line- function that parsed the arguments
  * @command: line to be parsed
@@ -102,6 +110,21 @@ void pall(stack_t **stack, unsigned int line_number)
 	}
 }
 
+/**
+ * pint - function that prints the value at the top of the stack
+ * @stack: double pointer to the stack
+ * @line_number: index of each element in the stack
+ */
+void pint(stack_t **stack, unsigned int line_number)
+{
+	(void)line_number;
+	if (*stack == NULL)
+	{
+		fprintf(stderr, "L%u: can't pint, stack empty\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+	printf("%d\n", (*stack)->n);
+}
 /**
  * free_stack - function that frees the whole stack before exiting
  * @stack: pointer to the stack

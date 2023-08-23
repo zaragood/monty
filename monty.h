@@ -38,9 +38,12 @@ typedef struct instruction_s
 
 
 extern char **data;
+extern instruction_t instruction_set[];
+
 char *_strdup(char *str);
 void push(stack_t **stack, unsigned int line_number);
 void pall(stack_t **stack, unsigned int line_number);
 char **parse_line(char *command);
 void free_stack(stack_t **stack);
+void pint(stack_t **stack, unsigned int line_number);
 #endif /*_MONTY_H_*/

@@ -8,8 +8,8 @@ char buffer[LIMIT]; /*Buffer for reading lines*/
 
 int main(int argc, char *argv[])
 {
-	size_t length, i;
-	unsigned int line_number = 0;
+	size_t length;
+	unsigned int line_number = 0, i, j;
 	stack_t *stack;
 	FILE *file_ptr;
 
@@ -47,20 +47,34 @@ int main(int argc, char *argv[])
 		/*call the opcode function on the according to the data parsed*/
 		if (data != NULL && data[0] != NULL)
 		{
-			if(strcmp(data[0], "push") == 0)
+			i = 0;
+
+			while (instruction_set[i].opcode != NULL)
 			{
-				push(&stack, line_number);
+				if(strcmp(data[0], instruction_set[i].opcode) == 0)
+				{
+					instruction_set[i].f(&stack, line_number);
+					break;
+				}
+				i++;
 			}
-			else if (strcmp(data[0], "pall") == 0)
+			if (instruction_set[i].opcode == NULL)
 			{
-				pall(&stack, line_number);
+				fprintf(stderr, "L%u: unknown instruction %s\n", line_number, data[0]);
+				free_stack(&stack);
+				fclose(file_ptr);
+				for (j = 0; data[j] != NULL; j++)
+                		{
+                        		free(data[j]);
+                		}
+                		free(data);
 			}
+			for (j = 0; data[j] != NULL; j++)
+			{
+				free(data[j]);
+			}
+			free(data);
 		}
-		for (i = 0; data[i] != NULL; i++)
-		{
-			free(data[i]);
-		}
-		free(data);
 	}
 	/*free the entire stack when the program exit*/
 	free_stack(&stack);
