@@ -1,4 +1,5 @@
 #include "monty.h"
+#include <string.h>
 /**
  * parse_line- function that parsed the arguments
  * @command: line to be parsed
@@ -7,13 +8,14 @@
 char **parse_line(char *command)
 {
 	char **parsed_data;
-	int count = 0;
+	int i, count = 0;
 	char *token;
 
-	parsed_data = malloc(sizeof(char *) * 2);
+	parsed_data = malloc(sizeof(char *) * 3);
 	if (parsed_data == NULL)
 	{
-		return (NULL);
+		fprintf(stderr, "Error: malloc failed\n");
+		exit(EXIT_FAILURE);
 	}
 
 	/*tokenize the command into arguments */
@@ -26,11 +28,25 @@ char **parse_line(char *command)
 	}
 	while (token && count < 2)
 	{
-		parsed_data[count] = token;
+		parsed_data[count] = _strdup(token);
+		
+		if (parsed_data[count] == NULL)
+		{
+			/*free previouly allocated memory*/
+			for (i = 0; i < count; i++)
+			{
+				free(parsed_data[i]);
+			}
+			free(parsed_data);
+			parsed_data = NULL;
+			return (NULL);
+		}
+				
 		token = strtok(NULL, " \t\n");
 		count++;
 	}
 	parsed_data[count] = NULL;
+
 	return (parsed_data);
 }
 
@@ -84,4 +100,21 @@ void pall(stack_t **stack, unsigned int line_number)
 		printf("%d\n", temp->n);
 		temp = temp->next;
 	}
+}
+
+/**
+ * free_stack - function that frees the whole stack before exiting
+ * @stack: pointer to the stack
+ */
+void free_stack(stack_t **stack)
+{
+	stack_t *temp = *stack, *next;
+	
+	while (temp != NULL)
+	{
+		next = temp->next;
+		free(temp);
+		temp = next;
+	}
+	*stack = NULL;
 }

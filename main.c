@@ -8,7 +8,7 @@ char buffer[LIMIT]; /*Buffer for reading lines*/
 
 int main(int argc, char *argv[])
 {
-	size_t length;
+	size_t length, i;
 	unsigned int line_number = 0;
 	stack_t *stack;
 	FILE *file_ptr;
@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
 		}
 
 		/*parse the line into opcode and arguments*/
+
 		data = parse_line(buffer);
 
 		/*call the opcode function on the according to the data parsed*/
@@ -55,8 +56,15 @@ int main(int argc, char *argv[])
 				pall(&stack, line_number);
 			}
 		}
+		for (i = 0; data[i] != NULL; i++)
+		{
+			free(data[i]);
+		}
 		free(data);
 	}
+	/*free the entire stack when the program exit*/
+	free_stack(&stack);
+
 	fclose(file_ptr);
 	return (EXIT_SUCCESS);
 }

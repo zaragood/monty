@@ -38,7 +38,9 @@ typedef struct instruction_s
 
 
 extern char **data;
+char *_strdup(char *str);
 void push(stack_t **stack, unsigned int line_number);
 void pall(stack_t **stack, unsigned int line_number);
 char **parse_line(char *command);
+void free_stack(stack_t **stack);
 #endif /*_MONTY_H_*/
