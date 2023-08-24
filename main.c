@@ -5,6 +5,7 @@
  */
 char **data;
 char buffer[LIMIT]; /*Buffer for reading lines*/
+char instruction[100];
 
 int main(int argc, char *argv[])
 {
@@ -47,34 +48,51 @@ int main(int argc, char *argv[])
 		/*call the opcode function on the according to the data parsed*/
 		if (data != NULL && data[0] != NULL)
 		{
+			/*Extract the instruction from data[0]*/
+			strcpy(instruction, data[0]);
 			i = 0;
 
-			while (instruction_set[i].opcode != NULL)
+			if (is_valid_instruction(instruction))
 			{
-				if(strcmp(data[0], instruction_set[i].opcode) == 0)
+				while (instruction_set[i].opcode != NULL)
 				{
-					instruction_set[i].f(&stack, line_number);
-					break;
+					if(strcmp(data[0], instruction_set[i].opcode) == 0)
+					{
+						instruction_set[i].f(&stack, line_number);
+						break;
+					}
+					i++;
 				}
-				i++;
+				if (instruction_set[i].opcode == NULL)
+				{
+					fprintf(stderr, "L%u: unknown instruction %s\n", line_number, data[0]);
+					free_stack(&stack);
+					fclose(file_ptr);
+					for (j = 0; data[j] != NULL; j++)
+                			{
+                        			free(data[j]);
+                			}
+                			free(data);
+				}
 			}
-			if (instruction_set[i].opcode == NULL)
+			else
 			{
-				fprintf(stderr, "L%u: unknown instruction %s\n", line_number, data[0]);
+				fprintf(stderr, "Error: Invalid instruction - %s\n", data[0]);
 				free_stack(&stack);
 				fclose(file_ptr);
 				for (j = 0; data[j] != NULL; j++)
-                		{
-                        		free(data[j]);
-                		}
-                		free(data);
+				{
+					free(data[j]);
+				}
+				free(data);
+				exit(EXIT_FAILURE);
 			}
-			for (j = 0; data[j] != NULL; j++)
-			{
-				free(data[j]);
-			}
-			free(data);
 		}
+		for (j = 0; data[j] != NULL; j++)
+		{
+			free(data[j]);
+		}
+		free(data);
 	}
 	/*free the entire stack when the program exit*/
 	free_stack(&stack);

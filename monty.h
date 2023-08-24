@@ -47,4 +47,5 @@ char **parse_line(char *command);
 void free_stack(stack_t **stack);
 void pint(stack_t **stack, unsigned int line_number);
 void pop(stack_t **stack, unsigned int line_number);
+int is_valid_instruction(const char *instruction);
 #endif /*_MONTY_H_*/

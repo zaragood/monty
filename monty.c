@@ -9,6 +9,20 @@ instruction_t instruction_set[] = {
 	{NULL, NULL}
 };
 
+int is_valid_instruction(const char *instruction)
+{
+	unsigned int i;
+
+	for (i = 0; i < sizeof(instruction_set) / sizeof(instruction_set[0]); i++)
+	{
+		if (strcmp(instruction, instruction_set[i].opcode) == 0)
+		{
+			return (1);
+		}
+	}
+	return (0);
+}
+
 /**
  * parse_line- function that parsed the arguments
  * @command: line to be parsed
