@@ -99,6 +99,7 @@ void push(stack_t **stack, unsigned int line_number)
 	if (new_node == NULL)
 	{
 		fprintf(stderr, "ERROR: malloc failed\n");
+		free_stack(stack);
 		exit(EXIT_FAILURE);
 	}
 	new_node->n = number;
@@ -140,6 +141,7 @@ void pint(stack_t **stack, unsigned int line_number)
 	if (*stack == NULL)
 	{
 		fprintf(stderr, "L%u: can't pint, stack empty\n", line_number);
+		free_stack(stack);
 		exit(EXIT_FAILURE);
 	}
 	printf("%d\n", (*stack)->n);
