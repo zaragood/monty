@@ -9,6 +9,11 @@ instruction_t instruction_set[] = {
 	{NULL, NULL}
 };
 
+/**
+ * is_valid_instruction - function checks if the instruction is valid
+ * @instruction: pointer to the instruction
+ * Return: 0 or 1
+ */
 int is_valid_instruction(const char *instruction)
 {
 	unsigned int i;
@@ -52,7 +57,7 @@ char **parse_line(char *command)
 	while (token && count < 2)
 	{
 		parsed_data[count] = _strdup(token);
-		
+
 		if (parsed_data[count] == NULL)
 		{
 			/*free previouly allocated memory*/
@@ -64,7 +69,6 @@ char **parse_line(char *command)
 			parsed_data = NULL;
 			return (NULL);
 		}
-				
 		token = strtok(NULL, " \t\n");
 		count++;
 	}
@@ -140,46 +144,3 @@ void pint(stack_t **stack, unsigned int line_number)
 	}
 	printf("%d\n", (*stack)->n);
 }
-/**
- * free_stack - function that frees the whole stack before exiting
- * @stack: pointer to the stack
- */
-void free_stack(stack_t **stack)
-{
-	stack_t *temp = *stack, *next;
-	
-	while (temp != NULL)
-	{
-		next = temp->next;
-		free(temp);
-		temp = next;
-	}
-	*stack = NULL;
-}
-
-/**
- * pop - The opcode pop removes the top element of the stack
- * @stack: ponter to the stack
- * @line_number: index of each element in the stack
- */
-void pop(stack_t **stack, unsigned int line_number)
-{
-	stack_t *temp;
-	(void)line_number;
-
-	if (*stack == NULL)
-	{
-		fprintf(stderr, "L%u: can't pop an empty stack\n", line_number);
-		exit(EXIT_FAILURE);
-	}
-	
-	temp = *stack;
-	*stack = (*stack)->next;
-
-	if (*stack != NULL)
-	{
-		(*stack)->prev = NULL;
-	}
-	free(temp);
-}
-
