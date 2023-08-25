@@ -40,10 +40,18 @@ int main(int argc, char *argv[])
 		{
 			buffer[length - 1] = '\0';
 		}
+		if (strlen(buffer) == 0)
+		{
+			continue;
+		}
 
 		/*parse the line into opcode and arguments*/
 
 		data = parse_line(buffer);
+		for (i = 0; data[i] != NULL; i++) {
+    			printf("data[%d]: %s\n", i, data[i]);
+		}
+
 
 		/*call the opcode function on the according to the data parsed*/
 		if (data != NULL && data[0] != NULL)

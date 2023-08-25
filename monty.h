@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -39,6 +40,7 @@ typedef struct instruction_s
 
 extern char **data;
 extern instruction_t instruction_set[];
+bool is_valid_integer(const char *str);
 
 char *_strdup(char *str);
 void push(stack_t **stack, unsigned int line_number);
@@ -48,4 +50,5 @@ void free_stack(stack_t **stack);
 void pint(stack_t **stack, unsigned int line_number);
 void pop(stack_t **stack, unsigned int line_number);
 int is_valid_instruction(const char *instruction);
+
 #endif /*_MONTY_H_*/
