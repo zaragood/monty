@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 		}
 
 		/*parse the line into opcode and arguments*/
-		data = parse_line(buffer);
+		data = parse_line(buffer, line_number);
 		
 		/*call the opcode function on the according to the data parsed*/
 		if (data != NULL && data[0] != NULL)

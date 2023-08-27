@@ -44,7 +44,7 @@ extern instruction_t instruction_set[];
 char *_strdup(char *str);
 void push(stack_t **stack, unsigned int line_number);
 void pall(stack_t **stack, unsigned int line_number);
-char **parse_line(char *command);
+char **parse_line(char *command, unsigned int line_number);
 void free_stack(stack_t **stack);
 void pint(stack_t **stack, unsigned int line_number);
 void pop(stack_t **stack, unsigned int line_number);

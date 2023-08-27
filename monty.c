@@ -12,7 +12,7 @@ instruction_t instruction_set[] = {
  * @command: line to be parsed
  * Return: the parsed data
  */
-char **parse_line(char *command)
+char **parse_line(char *command, unsigned int line_number)
 {
 	char **parsed_data;
 	int count = 0, i;
@@ -54,7 +54,7 @@ char **parse_line(char *command)
 	}
 	if (strcmp(parsed_data[0], "push") == 0 && count < 2)
 	{
-		fprintf(stderr, "usage: push integer\n");
+		fprintf(stderr, "L%u: usage: push integer\n", line_number);
 		for (i = 0; i < count; i++)
 		{
 			free(parsed_data[i]);
