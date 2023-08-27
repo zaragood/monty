@@ -1,5 +1,4 @@
 #include "monty.h"
-#include <string.h>
 
 instruction_t instruction_set[] = {
 	{"push", push},
@@ -8,26 +7,6 @@ instruction_t instruction_set[] = {
 	{"pop", pop},
 	{NULL, NULL}
 };
-
-/**
- * is_valid_instruction - function checks if the instruction is valid
- * @instruction: pointer to the instruction
- * Return: 0 or 1
- */
-int is_valid_instruction(const char *instruction)
-{
-	unsigned int i;
-
-	for (i = 0; i < sizeof(instruction_set) / sizeof(instruction_set[0]); i++)
-	{
-		if (strcmp(instruction, instruction_set[i].opcode) == 0)
-		{
-			return (1);
-		}
-	}
-	return (0);
-}
-
 /**
  * parse_line- function that parsed the arguments
  * @command: line to be parsed
@@ -36,7 +15,7 @@ int is_valid_instruction(const char *instruction)
 char **parse_line(char *command)
 {
 	char **parsed_data;
-	int i, count = 0;
+	int count = 0, i;
 	char *token;
 
 	parsed_data = malloc(sizeof(char *) * 3);
@@ -50,10 +29,6 @@ char **parse_line(char *command)
 	token = strtok(command, " \t\n");
 	if (token == NULL)
 	{
-		for (i = 0; i < count; i++)
-		{
-			free(parsed_data[i]);
-		}
 		free(parsed_data);
 		parsed_data = NULL;
 		return (NULL);
@@ -73,6 +48,7 @@ char **parse_line(char *command)
 			parsed_data = NULL;
 			return (NULL);
 		}
+
 		token = strtok(NULL, " \t\n");
 		count++;
 	}
@@ -88,24 +64,12 @@ char **parse_line(char *command)
  */
 void push(stack_t **stack, unsigned int line_number)
 {
-	int number, i;
+	int number;
 	stack_t *new_node;
 
 	if (!data || !data[1])
 	{
 		fprintf(stderr, "L%u: usage: push interger\n", line_number);
-		free_stack(stack);
-		exit(EXIT_FAILURE);
-	}
-	if (!is_valid_integer(data[1]))
-	{
-		fprintf(stderr, "L%u: usage: push integer\n", line_number);
-		free_stack(stack);
-		for (i = 0; data[i] != NULL; i++)
-		{
-			free(data[i]);
-		}
-		free(data);
 		exit(EXIT_FAILURE);
 	}
 
@@ -115,7 +79,6 @@ void push(stack_t **stack, unsigned int line_number)
 	if (new_node == NULL)
 	{
 		fprintf(stderr, "ERROR: malloc failed\n");
-		free_stack(stack);
 		exit(EXIT_FAILURE);
 	}
 	new_node->n = number;
@@ -157,8 +120,23 @@ void pint(stack_t **stack, unsigned int line_number)
 	if (*stack == NULL)
 	{
 		fprintf(stderr, "L%u: can't pint, stack empty\n", line_number);
-		free_stack(stack);
 		exit(EXIT_FAILURE);
 	}
 	printf("%d\n", (*stack)->n);
+}
+/**
+ * free_stack - function that frees the whole stack before exiting
+ * @stack: pointer to the stack
+ */
+void free_stack(stack_t **stack)
+{
+        stack_t *temp = *stack, *next;
+
+        while (temp != NULL)
+        {
+                next = temp->next;
+                free(temp);
+                temp = next;
+        }
+        *stack = NULL;
 }

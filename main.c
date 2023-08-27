@@ -5,7 +5,6 @@
  */
 char **data;
 char buffer[LIMIT]; /*Buffer for reading lines*/
-char instruction[100];
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +18,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "USAGE: monty file\n");
 		return (EXIT_FAILURE);
 	}
-	
+
 	file_ptr = fopen(argv[1], "r");
 	if (file_ptr == NULL)
 	{
@@ -29,7 +28,7 @@ int main(int argc, char *argv[])
 
 	/* initializing an empty stack */
 	stack = NULL;
-	
+
 	/*read lines from the file*/
 	while (fgets(buffer,  sizeof(buffer), file_ptr))
 	{
@@ -40,52 +39,26 @@ int main(int argc, char *argv[])
 		{
 			buffer[length - 1] = '\0';
 		}
-		if (strlen(buffer) == 0)
-		{
-			continue;
-		}
 
 		/*parse the line into opcode and arguments*/
-
 		data = parse_line(buffer);
-		for (i = 0; data[i] != NULL; i++) {
-    			printf("data[%d]: %s\n", i, data[i]);
-		}
-
-
+		
 		/*call the opcode function on the according to the data parsed*/
 		if (data != NULL && data[0] != NULL)
 		{
-			/*Extract the instruction from data[0]*/
-			strcpy(instruction, data[0]);
 			i = 0;
-
-			if (is_valid_instruction(instruction))
+			while (instruction_set[i].opcode != NULL)
 			{
-				while (instruction_set[i].opcode != NULL)
+				if (strcmp(data[0], instruction_set[i].opcode) == 0)
 				{
-					if(strcmp(data[0], instruction_set[i].opcode) == 0)
-					{
-						instruction_set[i].f(&stack, line_number);
-						break;
-					}
-					i++;
+					instruction_set[i].f(&stack, line_number);
+					break;
 				}
-				if (instruction_set[i].opcode == NULL)
-				{
-					fprintf(stderr, "L%u: unknown instruction %s\n", line_number, data[0]);
-					free_stack(&stack);
-					fclose(file_ptr);
-					for (j = 0; data[j] != NULL; j++)
-                			{
-                        			free(data[j]);
-                			}
-                			free(data);
-				}
+				i++;
 			}
-			else
+			if (instruction_set[i].opcode == NULL)
 			{
-				fprintf(stderr, "Error: Invalid instruction - %s\n", data[0]);
+				fprintf(stderr, "L%u: unknown instruction %s\n", line_number, data[0]);
 				free_stack(&stack);
 				fclose(file_ptr);
 				for (j = 0; data[j] != NULL; j++)
@@ -93,16 +66,15 @@ int main(int argc, char *argv[])
 					free(data[j]);
 				}
 				free(data);
-				exit(EXIT_FAILURE);
+				return (EXIT_FAILURE);
 			}
+			for (j = 0; data[j] != NULL; j++)
+			{
+				free(data[j]);
+			}
+			free(data);
 		}
-		for (j = 0; data[j] != NULL; j++)
-		{
-			free(data[j]);
-		}
-		free(data);
 	}
-	/*free the entire stack when the program exit*/
 	free_stack(&stack);
 
 	fclose(file_ptr);
