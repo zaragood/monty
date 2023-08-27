@@ -52,6 +52,17 @@ char **parse_line(char *command)
 		token = strtok(NULL, " \t\n");
 		count++;
 	}
+	if (strcmp(parsed_data[0], "push") == 0 && count < 2)
+	{
+		fprintf(stderr, "usage: push integer\n");
+		for (i = 0; i < count; i++)
+		{
+			free(parsed_data[i]);
+		}
+		free(parsed_data);
+		return (NULL);
+	}
+
 	parsed_data[count] = NULL;
 
 	return (parsed_data);
@@ -64,12 +75,24 @@ char **parse_line(char *command)
  */
 void push(stack_t **stack, unsigned int line_number)
 {
-	int number;
+	int number, i;
 	stack_t *new_node;
 
 	if (!data || !data[1])
 	{
 		fprintf(stderr, "L%u: usage: push interger\n", line_number);
+		free_stack(stack);
+		exit(EXIT_FAILURE);
+	}
+	if (!is_valid_integer(data[1]))
+	{
+		fprintf(stderr, "L%u: usage: push integer\n", line_number);
+		free_stack(stack);
+		for (i = 0; data[i] != NULL; i++)
+		{
+			free(data[i]);
+		}
+		free(data);
 		exit(EXIT_FAILURE);
 	}
 

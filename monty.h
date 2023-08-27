@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -47,4 +48,5 @@ char **parse_line(char *command);
 void free_stack(stack_t **stack);
 void pint(stack_t **stack, unsigned int line_number);
 void pop(stack_t **stack, unsigned int line_number);
+bool is_valid_integer(const char *str);
 #endif /*_MONTY_H_*/
